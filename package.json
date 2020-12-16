@@ -1,0 +1,30 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crowdedjs/examples.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crowdedjs/examples/issues"
+  },
+  "homepage": "https://github.com/crowdedjs/examples#readme",
+  "dependencies": {
+    "@crowdedjs/objs": "^0.1.0",
+    "@crowdedjs/recast-detour": "^0.1.1",
+    "@crowdedjs/worker": "^0.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1"
+  },
+  "type": "module"
+}

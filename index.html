@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Single Crowd Simulator</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" type="text/css" href="./three.css">
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ricksteam/fluent-behavior-tree-browser/bundle.js"></script>
+  <script src="./bundle.js"></script>
+  <script type="module">
+    //Show FPS Counter
+    //Comment this line if you don't want to show the FPS counter
+    javascript: (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = '//mrdoob.github.io/stats.js/build/stats.min.js'; document.head.appendChild(script); })()
+
+    import EvacuationAgent from "./sim/EvacuationAgent.js"
+    import CrowdSetup from "./index.js"
+    import urlParser from "./urlParser.js"
+
+    let params = {};
+    let assetBase = "./";
+    // let assetBase = "https://cdn.jsdelivr.net/npm/@crowdedjs/assets/";
+    params.objPath = assetBase + "objs/flat.obj";
+    params.arrivalPath = assetBase + "arrivals/flat.json";
+    params.locationsPath = assetBase + "locations/flat.json";
+    params.secondsOfSimulation = 30000;
+    params.millisecondsBetweenFrames = 40;
+
+    params = urlParser(window, params, assetBase);
+
+    let promises = [axios.get(params.objPath), axios.get(params.locationsPath), axios.get(params.arrivalPath)];
+    Promise.all(promises)
+      .then(results => {
+        let objValue = results[0].data;
+        let locationValue = results[1].data;
+        let arrivalValue = results[2].data;
+
+        let agents = [];
+        //Add an agent with a behavior
+        for (let i = 0; i < arrivalValue.length; i++) {
+          let jsonAgent = arrivalValue[i];
+          let newAgent = new EvacuationAgent(jsonAgent, locationValue);
+          newAgent.setId(i);
+          agents.push(newAgent);
+        }
+
+        //Start the simulation.
+        new CrowdSetup(objValue, agents, params.secondsOfSimulation, params.millisecondsBetweenFrames, locationValue, window, document.body, (agent) => {
+          agent = agents.find(a => a.id == agent.id);
+          if (agent.name == "Person")
+            return "red";
+          return "magenta"
+        });
+
+      })
+      .catch(error => {
+        console.log("Error in the app " + error)
+      })
+
+  </script>
+</body>
+</html>
