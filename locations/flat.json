@@ -3,9 +3,18 @@
     "name": "Main Entrance",
     "annotationName": "Main Entrance",
     "position": {
-      "x": 20,
+      "x": 0,
       "y": 0.25,
-      "z": 20
+      "z": -20
+    }
+  },
+  {
+    "name": "Room",
+    "annotationName": "Room",
+    "position": {
+      "x": 0,
+      "y": 0.25,
+      "z": 0
     }
   }
 ]

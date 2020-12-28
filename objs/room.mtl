@@ -1,0 +1,38 @@
+
+
+  newmtl texture0
+  Ka 0 0 0
+  Kd 1 1 1
+  map_Ka room0.jpg
+  map_Kd room0.jpg
+  
+  newmtl texture8
+  Ka 0 0 0
+  Kd 1 1 1
+  map_Ka room8.jpg
+  map_Kd room8.jpg
+  
+  newmtl texture16
+  Ka 0 0 0
+  Kd 1 1 1
+  map_Ka room16.jpg
+  map_Kd room16.jpg
+  
+  newmtl texture24
+  Ka 0 0 0
+  Kd 1 1 1
+  map_Ka room24.jpg
+  map_Kd room24.jpg
+  
+  newmtl texture32
+  Ka 0 0 0
+  Kd 1 1 1
+  map_Ka room32.jpg
+  map_Kd room32.jpg
+  
+  newmtl texture40
+  Ka 0 0 0
+  Kd 1 1 1
+  map_Ka room40.jpg
+  map_Kd room40.jpg
+  

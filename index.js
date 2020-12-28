@@ -1,5 +1,5 @@
-import * as viewer from "./viewer.js"
-//import simulations from "./simulations.js"
+// import * as viewer from "./viewer.js"
+import simulations from "./simulations.js"
 import ControlCreator from "./ControlCreator.js"
 import * as THREE from './lib/three.module.js';
 
@@ -22,16 +22,17 @@ class CrowdSetup {
 
 
 
-  constructor(objValue, agents, secondsOfSimulation, millisecondsBetweenFrames, locationValue, window, elementParent, drawCallback) {
+  constructor(objValue, agents, secondsOfSimulation, millisecondsBetweenFrames, locationValue, trialName, window, elementParent, drawCallback) {
     let locations;
     this.first = true;
     this.nonce = Math.random();
+    this.done = false;
     let self = this;
     console.log(this.nonce);
     locations = locationValue;
     if (elementParent != null) {
       controls = new ControlCreator(secondsOfSimulation, millisecondsBetweenFrames, simulations, elementParent);
-      viewer.boot(CrowdSetup.three, objValue, locations);
+      // viewer.boot(CrowdSetup.three, objValue, locations);
 
     }
     else {
@@ -77,7 +78,6 @@ class CrowdSetup {
       let newDestinations = [];
       let leavingAgents = [];
 
-
       for (let j = 0; j < agents.length; j++) {
         let agent = agents[j]; //Grab each agent in the list
 
@@ -107,22 +107,33 @@ class CrowdSetup {
           }
         }
       }
-      //Check to see if we need to end the simulation
-      if (i < secondsOfSimulation * 1_000 / millisecondsBetweenFrames) {
-        //console.log("Call next " + nonce)
-        //If the simulation needs to continue, send on the information 
-        //about new agents, agents with new destinations, and agents that have left the simulation
-        nextTick([JSON.stringify(newAgents, replacer), JSON.stringify(newDestinations, replacer), JSON.stringify(leavingAgents, replacer)])
-      }
-      else {
+
+      if (agents.length == leavingAgents.length && !self.done) {
+        let data = document.getElementById("counter").outerHTML.split("<br>")
+        let thisResult = "<p>" + trialName + ": " + parseInt(data[1]) / 1000 + " Seconds</p>";
+        let results = document.getElementById("trials").innerHTML += thisResult
+        self.done = true;
         console.log("Done " + self.nonce)
+      } else {
+        //Check to see if we need to end the simulation
+        if (i < secondsOfSimulation * 1_000 / millisecondsBetweenFrames) {
+          //console.log("Call next " + nonce)
+          //If the simulation needs to continue, send on the information 
+        //If the simulation needs to continue, send on the information 
+          //If the simulation needs to continue, send on the information 
+          //about new agents, agents with new destinations, and agents that have left the simulation
+          nextTick([JSON.stringify(newAgents, replacer), JSON.stringify(newDestinations, replacer), JSON.stringify(leavingAgents, replacer)])
+        } else {
+          console.log("Done " + self.nonce)
+        }
       }
+
     }
 
     function main() {
       //Boot the viewer
       //Adapt the viewer to the window size
-      viewer.Resize(window, CrowdSetup.three.renderer, CrowdSetup.three.camera);
+      // viewer.Resize(window, CrowdSetup.three.renderer, CrowdSetup.three.camera);
       //Start the viewer clock
       if (self.first)
         setTimeout(tick, 33);
@@ -156,37 +167,39 @@ class CrowdSetup {
         let frame = simulationAgents[index];
 
         //Add new agents
-        for (let j = 0; j < frame.length; j++) {
-          let agent = frame[j]; //Grab each agent in the list
-          if(!CrowdSetup.three.agentGroup.children.some(c=>c._id == agent.id)){
-            viewer.addAgent(CrowdSetup.three, agent,  drawCallback)
+        if (CrowdSetup.three.agentGroup !== undefined) {
+          for (let j = 0; j < frame.length; j++) {
+            let agent = frame[j]; //Grab each agent in the list
+            if(!CrowdSetup.three.agentGroup.children.some(c=>c._id == agent.id)){
+              // viewer.addAgent(CrowdSetup.three, agent,  drawCallback)
+            }
           }
-        }
-        //Remove old agents
-        let toRemove = [];
-        for(let j = 0; j < CrowdSetup.three.agentGroup.children.length; j++){
-          let child = CrowdSetup.three.agentGroup.children[j];
-          if(!frame.some(f=>f.id == child._id)){
-           toRemove.push(child);
+          //Remove old agents
+          let toRemove = [];
+          for(let j = 0; j < CrowdSetup.three.agentGroup.children.length; j++){
+            let child = CrowdSetup.three.agentGroup.children[j];
+            if(!frame.some(f=>f.id == child._id)){
+             toRemove.push(child);
+            }
           }
-        }
-        for(let j = 0; j < toRemove.length; j++){
-          CrowdSetup.three.agentGroup.remove(toRemove[j]);
-        }
-        //Update remaining agents
-        for(let j = 0; j < CrowdSetup.three.agentGroup.children.length; j++){
-          let child = CrowdSetup.three.agentGroup.children[j];
-          let agent = frame.find(f=>f.id == child._id);
-          child.position.set(agent.x, agent.y, agent.z);
+          for(let j = 0; j < toRemove.length; j++){
+            CrowdSetup.three.agentGroup.remove(toRemove[j]);
+          }
+          //Update remaining agents
+          for(let j = 0; j < CrowdSetup.three.agentGroup.children.length; j++){
+            let child = CrowdSetup.three.agentGroup.children[j];
+            let agent = frame.find(f=>f.id == child._id);
+            child.position.set(agent.x, agent.y, agent.z);
+          }
         }
       }
       //Render the current frame
-      viewer.render(CrowdSetup.three);
+      // viewer.render(CrowdSetup.three);
       //Reset the timer
       setTimeout(tick, 33);
     }
     //From https://stackoverflow.com/a/29522050/10047920
-    window.addEventListener("resize", () => viewer.Resize(window, CrowdSetup.three.renderer, CrowdSetup.three.camera));
+    // window.addEventListener("resize", () => viewer.Resize(window, CrowdSetup.three.renderer, CrowdSetup.three.camera));
   }
 }
 

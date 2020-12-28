@@ -38,7 +38,7 @@ class EvacuationAgent {
     this.destY = 0;
     this.destZ = 0;
 
-    this.behavior = new EvacuationBehavior(this, agent.id, new Vector3(100,0, 100));
+    this.behavior = new EvacuationBehavior(this, agent.id, new Vector3(0, 0.25, -20));
 
 
   }

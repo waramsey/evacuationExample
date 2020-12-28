@@ -21,11 +21,12 @@
     import EvacuationAgent from "./sim/EvacuationAgent.js"
     import CrowdSetup from "./index.js"
     import urlParser from "./urlParser.js"
+    // import * as threads from "./node_modules/threads/index.mjs"
 
+    const delay = ms => new Promise(res => setTimeout(res, ms));
     let params = {};
     let assetBase = "./";
-    // let assetBase = "https://cdn.jsdelivr.net/npm/@crowdedjs/assets/";
-    params.objPath = assetBase + "objs/flat.obj";
+    params.objPath = assetBase + "objs/objectsList.txt";
     params.arrivalPath = assetBase + "arrivals/flat.json";
     params.locationsPath = assetBase + "locations/flat.json";
     params.secondsOfSimulation = 30000;
@@ -40,28 +41,42 @@
         let locationValue = results[1].data;
         let arrivalValue = results[2].data;
 
-        let agents = [];
-        //Add an agent with a behavior
-        for (let i = 0; i < arrivalValue.length; i++) {
-          let jsonAgent = arrivalValue[i];
-          let newAgent = new EvacuationAgent(jsonAgent, locationValue);
-          newAgent.setId(i);
-          agents.push(newAgent);
-        }
 
-        //Start the simulation.
-        new CrowdSetup(objValue, agents, params.secondsOfSimulation, params.millisecondsBetweenFrames, locationValue, window, document.body, (agent) => {
-          agent = agents.find(a => a.id == agent.id);
-          if (agent.name == "Person")
-            return "red";
-          return "magenta"
+        let objArr = objValue.split(",");
+        let objPromises = [];
+        objArr.forEach(obj => {
+          objPromises.push(axios.get(assetBase + "objs/" + obj))
         });
-
+        Promise.all(objPromises)
+          .then(objResults => {
+            //Start the simulation.
+            for (let i = 0; i < objArr.length; i++) {
+              let agents = [];
+              //Add an agent with a behavior
+              for (let i = 0; i < arrivalValue.length; i++) {
+                let jsonAgent = arrivalValue[i];
+                let newAgent = new EvacuationAgent(jsonAgent, locationValue);
+                newAgent.setId(i);
+                agents.push(newAgent);
+              }
+              console.log("Running simulation on " + objArr[i])
+              let CS = new CrowdSetup(objResults[i].data, agents.slice(0), params.secondsOfSimulation, params.millisecondsBetweenFrames, locationValue, objArr[i], window, document.body, (agent) => {
+                agent = agents.find(a => a.id == agent.id);
+                if (agent.name == "Person")
+                  return "red";
+                else
+                  return "magenta";
+              })
+            }
+          })
+          .catch(error => {
+            console.log("Error in the app " + error)
+          })
       })
       .catch(error => {
         console.log("Error in the app " + error)
       })
-
   </script>
 </body>
+
 </html>

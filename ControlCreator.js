@@ -82,6 +82,10 @@ class ControlCreator {
     divCounter.id = "counter";
     divCounterParent.appendChild(divCounter);
 
+    let divTrials = document.createElement("div");
+    divTrials.id = "trials";
+    divCounterParent.appendChild(divTrials);
+
     document.body.appendChild(divCounterParent);
 
     let divLoading = document.createElement("div");
@@ -199,14 +203,15 @@ class ControlCreator {
     for(let i = 0; i < allSimulations.length; i++){
       vels.push(allSimulations[i].length / ((new Date() - firstTicks[i])/1000));
     }
-    let value = "" + this.asTime(document.getElementById("myRange").value) 
-    + "<br>" + allSimulations.map(i=>"" + this.asTime(i.length) + " seconds calculated").join(",") 
-    + "<br>" + allSimulations.map(i=>"" + i.length + " frames calculated").join(",") 
-    + "<br>" + vels.map(i=>i.toFixed(2) + " fps").join(",")
-    + "<br>" + vels.map(i=>(this.asTime(i.length) / this.secondsOfSimulation)  + " fps").join(",")
-    + "<br>" + this.asTime(this.secondsOfSimulation * 1_000 / this.millisecondsPerFrame);
+    let value = "<br>" + this.asTime(document.getElementById("myRange").value) + "<br>"
+    // + "<br>" + allSimulations.map(i=>"" + this.asTime(i.length) + " seconds calculated").join("<br>") 
+    // + "<br>" + allSimulations.map(i=>"" + i.length + " frames calculated").join(",") 
+    // + "<br>" + vels.map(i=>i.toFixed(2) + " fps").join(",")
+    // + "<br>" + vels.map(i=>(this.asTime(i.length) / this.secondsOfSimulation)  + " fps").join(",")
+    // + "<br>" + this.asTime(this.secondsOfSimulation * 1_000 / this.millisecondsPerFrame);
 
     document.getElementById("counter").innerHTML = value;
+
   }
   getCurrentTick(){
     let rangeElement = document.getElementById("myRange");

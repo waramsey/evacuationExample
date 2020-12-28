@@ -25,16 +25,22 @@ class EvacuationBehavior {
       //We return running until we're close to it.
       .do("Traveling to goal", (t) => {
         //let agent = t.agents.find(a=>a.id==self.agent.index);
-        self.agent.destination = new Vector3(self.waypoints[0].x,self.waypoints[0].y,self.waypoints[0].z);
-        let simulationAgent = t.crowd.find(a=>a.id == self.agent.id);
-        let loc = new Vector3(simulationAgent.x, simulationAgent.y, simulationAgent.z);
-        let waypoint = new Vector3(self.waypoints[0]);
-
-        let difference = Vector3.subtract(loc, waypoint)
-        let distanceToWaypoint = difference.length();
-
-        if (distanceToWaypoint < 2)
-          return fluentBehaviorTree.BehaviorTreeStatus.Success;
+        if (self.agent.inSimulation) {
+          self.agent.destination = new Vector3(self.waypoints[0].x,self.waypoints[0].y,self.waypoints[0].z);
+          let simulationAgent = t.crowd.find(a=>a.id == self.agent.id);
+          if (simulationAgent === undefined)
+            return fluentBehaviorTree.BehaviorTreeStatus.Running;
+            
+          let loc = new Vector3(simulationAgent.x, simulationAgent.y, simulationAgent.z);  
+          let difference = Vector3.subtract(loc, self.waypoints[0])
+          let distanceToWaypoint = difference.length();
+  
+          if (distanceToWaypoint < 2) {
+            self.agent.inSimulation = false;
+            return fluentBehaviorTree.BehaviorTreeStatus.Success;
+          }
+          return fluentBehaviorTree.BehaviorTreeStatus.Running;
+        }
         return fluentBehaviorTree.BehaviorTreeStatus.Running;
       })
       .end()

@@ -20,7 +20,9 @@
   "dependencies": {
     "@crowdedjs/objs": "^0.1.0",
     "@crowdedjs/recast-detour": "^0.1.1",
-    "@crowdedjs/worker": "^0.1.0"
+    "@crowdedjs/worker": "^0.1.0",
+    "fs": "0.0.1-security",
+    "threads": "^1.6.3"
   },
   "devDependencies": {
     "chai": "^4.2.0",
