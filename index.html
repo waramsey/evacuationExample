@@ -10,6 +10,7 @@
 </head>
 
 <body>
+  <input type="button" id="dwn-btn" style="float: right; margin: 10px;" value="Download Results"/>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@ricksteam/fluent-behavior-tree-browser/bundle.js"></script>
   <script src="./bundle.js"></script>
@@ -75,7 +76,31 @@
       })
       .catch(error => {
         console.log("Error in the app " + error)
-      })
+      }
+    )
+    
+    function download(filename, text) {
+      let divDownload = document.getElementById('download');
+      let downloadButton = document.createElement('a');
+      downloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      downloadButton.setAttribute('download', filename);
+
+      downloadButton.style.display = 'none';
+      divDownload.appendChild(downloadButton);
+
+      downloadButton.click();
+
+      divDownload.removeChild(downloadButton);
+    }
+
+    document.getElementById("dwn-btn").addEventListener("click", function(){
+      var text = document.getElementById("trials").innerHTML;
+      text = text.replaceAll("<p>", "");
+      text = text.replaceAll("</p>", "\n");
+      var filename = "results.txt";
+
+      download(filename, text);
+    }, false)
   </script>
 </body>
 

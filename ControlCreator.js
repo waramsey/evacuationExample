@@ -78,12 +78,17 @@ class ControlCreator {
     divCounterParent.style.top = "20px";
     divCounterParent.style.right = "20px";
 
+    let divDownload = document.createElement("div");
+    divDownload.id = "download";
+    divCounterParent.appendChild(divDownload);
+    
     let divCounter = document.createElement("div");
     divCounter.id = "counter";
     divCounterParent.appendChild(divCounter);
-
+    
     let divTrials = document.createElement("div");
     divTrials.id = "trials";
+    divTrials.value = "";
     divCounterParent.appendChild(divTrials);
 
     document.body.appendChild(divCounterParent);

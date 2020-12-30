@@ -110,8 +110,8 @@ class CrowdSetup {
 
       if (agents.length == leavingAgents.length && !self.done) {
         let data = document.getElementById("counter").outerHTML.split("<br>")
-        let thisResult = "<p>" + trialName + ": " + parseInt(data[1]) / 1000 + " Seconds</p>";
-        let results = document.getElementById("trials").innerHTML += thisResult
+        let thisResult = "<p>" + trialName + ": " + parseInt(data[1]) / 1000 + "</p>";
+        document.getElementById("trials").innerHTML += thisResult
         self.done = true;
         console.log("Done " + self.nonce)
       } else {
@@ -140,10 +140,7 @@ class CrowdSetup {
 
       //bootWorker needs to be included in the calling html file
       //Start the threaded simulator
-      bootWorker(objValue, secondsOfSimulation, millisecondsBetweenFrames, locationValue, bootCallback, tickCallback, self.nonce);
-
-
-      
+      bootWorker(objValue, secondsOfSimulation, millisecondsBetweenFrames, locationValue, bootCallback, tickCallback, self.nonce); 
     }
 
     //Respond to the viewer timer
